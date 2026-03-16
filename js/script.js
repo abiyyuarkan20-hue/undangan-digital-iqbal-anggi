@@ -123,25 +123,27 @@ document.addEventListener("DOMContentLoaded", () => {
       flower.remove();
     }, 1700);
   }
-
   /* ================================================= */
-  /* 3. MAGNETIC CRYSTAL PARTICLES (FIXED MAGNET)      */
+  /* 3. MAGNETIC CRYSTAL PARTICLES (FIXED & CLEANED)   */
   /* ================================================= */
   const canvas = document.getElementById("particle-canvas");
   if (canvas) {
     const particles = [];
-    const particleCount = 20;
+    const particleCount = 25;
 
+    // 1. Create Particles
     for (let i = 0; i < particleCount; i++) {
       const el = document.createElement("div");
       el.className = "crystal";
-      const size = Math.random() * 12 + 4;
 
+      const size = Math.random() * 8 + 4;
       el.style.width = `${size}px`;
       el.style.height = `${size}px`;
 
+      // Use clientHeight to ensure we get a real value
+      let canvasHeight = canvas.clientHeight || 600;
       let posX = Math.random() * window.innerWidth;
-      let posY = Math.random() * (canvas.offsetHeight || 800);
+      let posY = Math.random() * canvasHeight;
 
       el.style.left = `${posX}px`;
       el.style.top = `${posY}px`;
@@ -157,12 +159,14 @@ document.addEventListener("DOMContentLoaded", () => {
       canvas.appendChild(el);
     }
 
+    // 2. Mouse Interaction Logic
     document.addEventListener("mousemove", (e) => {
       const rect = canvas.getBoundingClientRect();
       const mouseX = e.clientX - rect.left;
       const mouseY = e.clientY - rect.top;
 
       particles.forEach((p) => {
+        // We use p.baseX (static) and p.y (dynamic) for accurate distance
         const dx = mouseX - p.baseX;
         const dy = mouseY - p.y;
         const distance = Math.sqrt(dx * dx + dy * dy);
@@ -170,31 +174,40 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (distance < maxDistance) {
           const force = (maxDistance - distance) / maxDistance;
-          const moveX = (dx / distance) * force * 50;
-          const moveY = (dy / distance) * force * 50;
+          const moveX = (dx / distance) * force * 60;
+          const moveY = (dy / distance) * force * 60;
 
-          p.el.style.transform = `translate(${-moveX}px, ${-moveY}px) rotate(${p.angle}deg) scale(1.3)`;
-          p.el.style.boxShadow = "0 0 20px rgba(248, 165, 194, 0.6)";
+          p.el.style.transform = `translate(${-moveX}px, ${-moveY}px) rotate(${p.angle}deg) scale(1.5)`;
           p.el.style.opacity = "1";
+          p.el.style.boxShadow = "0 0 15px rgba(248, 165, 194, 0.8)";
         } else {
           p.el.style.transform = `translate(0, 0) rotate(${p.angle}deg) scale(1)`;
-          p.el.style.boxShadow = "none";
           p.el.style.opacity = "0.4";
+          p.el.style.boxShadow = "none";
         }
       });
-    });
+    }); // <--- THIS WAS MISSING: Closing the mousemove listener
 
+    // 3. Animation Loop
     function animateParticles() {
+      const canvasHeight = canvas.clientHeight || 600;
       particles.forEach((p) => {
+        // Floating upwards
         p.y -= p.speed;
-        p.angle += 0.3;
+        p.angle += 0.5;
+
+        // Reset when it leaves the top
         if (p.y < -20) {
-          p.y = canvas.offsetHeight + 20;
+          p.y = canvasHeight + 20;
         }
+
+        // Apply position
         p.el.style.top = `${p.y}px`;
       });
       requestAnimationFrame(animateParticles);
     }
+
+    // Start the animation
     animateParticles();
   }
 

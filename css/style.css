@@ -727,11 +727,23 @@ h2 {
   pointer-events: none;
 }
 
+/* Container untuk partikel di dalam section event */
 #particle-canvas {
   position: absolute;
-  inset: 0;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  min-height: 100vh; /* Tambahkan ini */
+  overflow: hidden;
   pointer-events: none;
   z-index: 1;
+}
+
+.crystal {
+  background: #f8a5c2 !important; /* Beri warna keras untuk testing */
+  display: block !important;
+  position: absolute;
 }
 
 .section-title {
@@ -1462,22 +1474,6 @@ footer h3 {
   color: #bbb; /* Warna sangat pudar */
   margin-top: 40px;
   letter-spacing: 1px;
-}
-
-/* --- Responsif Mobile --- */
-@media (max-width: 480px) {
-  footer {
-    padding: 80px 15px 40px 15px;
-  }
-  footer h3 {
-    font-size: 40px;
-  }
-  .footer-divider {
-    width: 100px; /* Garis lebih pendek di HP */
-  }
-  .thank-you-text {
-    font-size: 0.9rem;
-  }
 }
 
 /* ================================================= */
