@@ -152,7 +152,7 @@ document.addEventListener("DOMContentLoaded", () => {
   /* ================================================= */
   /* 5. SCROLL EFFECTS                                 */
   /* ================================================= */
-  window.addEventListener("scroll", () => {
+  /*window.addEventListener("scroll", () => {
     let scrollY = window.scrollY;
 
     if (navbar) {
@@ -186,7 +186,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (scrollBtn)
     scrollBtn.addEventListener("click", () =>
       window.scrollTo({ top: 0, behavior: "smooth" }),
-    );
+    ); */
 
   /* ================================================= */
   /* 6. COUNTDOWN & DECORATIONS                        */
