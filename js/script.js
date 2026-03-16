@@ -47,17 +47,14 @@ document.addEventListener("DOMContentLoaded", () => {
     if (guestElem) guestElem.innerText = decodedName;
   } else if (guestElem) {
     guestElem.innerText = "Tamu Undangan";
-  }
+  } /* 3. OPENING LOGIC (Tanpa Auto-Scroll QR)           */ /* ================================================= */
 
-  /* ================================================= */
-  /* 3. OPENING LOGIC & AUTO-SCROLL                    */
   /* ================================================= */
   if (btnOpen) {
     btnOpen.addEventListener("click", () => {
       overlay.classList.add("fade-out");
-      body.classList.remove("no-scroll");
+      body.classList.remove("no-scroll"); // Play Music
 
-      // Play Music
       if (music) {
         music
           .play()
@@ -66,34 +63,14 @@ document.addEventListener("DOMContentLoaded", () => {
             if (musicBtn) musicBtn.innerHTML = "🎵";
           })
           .catch(() => console.log("Autoplay blocked"));
-      }
+      } // --- LOGIKA AUTO-SCROLL DIHAPUS DARI SINI ---
 
-      // AUTO-SCROLL JIKA SCAN QR
-      if (guestFromQR) {
-        setTimeout(() => {
-          const target = document.getElementById("rsvp");
-          if (target) {
-            target.scrollIntoView({ behavior: "smooth", block: "start" });
-          }
-        }, 1200);
-      }
+      // User akan tetap berada di bagian atas (Home/Hero)
+      // meskipun mereka datang dari scan QR.
 
       setTimeout(() => {
         overlay.style.display = "none";
       }, 1400);
-    });
-  }
-
-  if (musicBtn) {
-    musicBtn.addEventListener("click", () => {
-      if (isPlaying) {
-        music.pause();
-        musicBtn.innerHTML = "🔇";
-      } else {
-        music.play();
-        musicBtn.innerHTML = "🎵";
-      }
-      isPlaying = !isPlaying;
     });
   }
 
@@ -152,7 +129,7 @@ document.addEventListener("DOMContentLoaded", () => {
   /* ================================================= */
   /* 5. SCROLL EFFECTS                                 */
   /* ================================================= */
-  /*window.addEventListener("scroll", () => {
+  window.addEventListener("scroll", () => {
     let scrollY = window.scrollY;
 
     if (navbar) {
@@ -186,7 +163,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (scrollBtn)
     scrollBtn.addEventListener("click", () =>
       window.scrollTo({ top: 0, behavior: "smooth" }),
-    ); */
+    );
 
   /* ================================================= */
   /* 6. COUNTDOWN & DECORATIONS                        */
