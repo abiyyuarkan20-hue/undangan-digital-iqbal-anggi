@@ -1166,8 +1166,21 @@ h2 {
   letter-spacing: 3px;
   margin-bottom: 5px;
   z-index: 2;
-  color: #fff;
+
+  /* Gunakan !important untuk memaksa warna putih */
+  color: #ffffff !important;
+  text-decoration: none !important;
+
+  /* Tambahkan ini untuk menangkap jika browser membungkusnya dengan link otomatis */
+  -webkit-text-fill-color: #ffffff !important;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* Selector tambahan jika browser tetap memaksa membuat tag <a> di dalamnya */
+.card-number a {
+  color: inherit !important;
+  text-decoration: none !important;
+  pointer-events: none; /* Agar tidak bisa diklik sebagai telp */
 }
 
 .card-holder {
@@ -1469,31 +1482,50 @@ h2 {
   --text-slate: #708090;
 }
 
-/* Floating Actions */
+/* Pastikan tombol melayang berada di lapisan paling atas */
 .floating-actions {
   position: fixed;
   bottom: 30px;
-  right: 20px;
+  right: 30px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  z-index: 1000;
+  gap: 15px;
+  z-index: 9999;
 }
 
 .btn-float {
   width: 50px;
   height: 50px;
   border-radius: 50%;
-  background: white;
-  color: var(--text-slate);
-  border: 1px solid var(--pink-primary);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  background: var(--white);
+  color: var(--secondary);
+  border: none;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
+  transition: all 0.3s ease;
+}
+
+.btn-float:hover {
+  transform: scale(1.1);
+  background: var(--secondary);
+  color: var(--white);
+}
+
+/* Animasi sederhana untuk toast notifikasi jika ingin ditambahkan nanti */
+.copy-notification {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 20px;
+  z-index: 10001;
+  font-size: 14px;
 }
 
 #qr-trigger {

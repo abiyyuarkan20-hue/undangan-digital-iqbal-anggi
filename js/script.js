@@ -127,11 +127,12 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   /* ================================================= */
-  /* 5. SCROLL EFFECTS                                 */
+  /* 5. SCROLL EFFECTS (FIXED)                         */
   /* ================================================= */
   window.addEventListener("scroll", () => {
     let scrollY = window.scrollY;
 
+    // Efek Navbar muncul/hilang
     if (navbar) {
       navbar.style.transform =
         scrollY > lastScrollY && scrollY > 200
@@ -141,29 +142,27 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     lastScrollY = scrollY;
 
+    // Menampilkan tombol Scroll To Top
     if (scrollBtn) {
-      scrollBtn.style.display = scrollY > 500 ? "flex" : "none";
-    }
-
-    contentSections.forEach((section) => {
-      const sectionHeight = section.offsetHeight;
-      const sectionTop = section.offsetTop - 300;
-      if (scrollY > sectionTop && scrollY <= sectionTop + sectionHeight) {
-        const id = section.getAttribute("id");
-        navLinks.forEach((link) => {
-          link.classList.toggle(
-            "active",
-            link.getAttribute("href") === `#${id}`,
-          );
-        });
+      if (scrollY > 500) {
+        scrollBtn.style.display = "flex";
+      } else {
+        scrollBtn.style.display = "none";
       }
-    });
+    }
   });
 
-  if (scrollBtn)
-    scrollBtn.addEventListener("click", () =>
-      window.scrollTo({ top: 0, behavior: "smooth" }),
-    );
+  // FUNGSI SCROLL TO TOP (Dipaksa ke 0)
+  if (scrollBtn) {
+    scrollBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      window.scrollTo({
+        top: 0,
+        left: 0,
+        behavior: "smooth",
+      });
+    });
+  }
 
   /* ================================================= */
   /* 6. COUNTDOWN & DECORATIONS                        */
@@ -304,13 +303,47 @@ document.addEventListener("DOMContentLoaded", () => {
 }); // Penutup DOMContentLoaded
 
 /* ================================================= */
-/* GLOBAL UTILS (Di Luar agar bisa diakses HTML)    */
+/* GLOBAL UTILS: FUNGSI SALIN MULTIFUNGSI            */
 /* ================================================= */
-window.copyRek = function (id) {
-  const el = document.getElementById(id);
-  if (!el) return;
-  const num = el.innerText.replace(/\D/g, "");
-  navigator.clipboard
-    .writeText(num)
-    .then(() => alert("Nomor Rekening Disalin: " + num));
+window.copyText = function (text) {
+  // Fungsi utama menggunakan Clipboard API
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard
+      .writeText(text)
+      .then(() => {
+        showToast("Berhasil disalin!");
+      })
+      .catch((err) => {
+        fallbackCopyText(text);
+      });
+  } else {
+    fallbackCopyText(text);
+  }
 };
+
+// Fungsi cadangan jika browser tidak mendukung Clipboard API
+function fallbackCopyText(text) {
+  const textArea = document.createElement("textarea");
+  textArea.value = text;
+  document.body.appendChild(textArea);
+  textArea.select();
+  try {
+    document.execCommand("copy");
+    showToast("Berhasil disalin!");
+  } catch (err) {
+    alert("Gagal menyalin teks.");
+  }
+  document.body.removeChild(textArea);
+}
+
+// Fungsi Notifikasi Sederhana
+function showToast(message) {
+  const toast = document.createElement("div");
+  toast.className = "copy-notification";
+  toast.innerText = message;
+  document.body.appendChild(toast);
+  setTimeout(() => {
+    toast.style.opacity = "0";
+    setTimeout(() => toast.remove(), 500);
+  }, 2000);
+}
