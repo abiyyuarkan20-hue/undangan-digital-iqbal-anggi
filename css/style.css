@@ -491,6 +491,7 @@ section {
   align-items: center;
   justify-content: center;
   text-align: center;
+  border-radius: 20px;
 }
 
 /* Dekorasi Partikel Cahaya di Background */
@@ -708,6 +709,8 @@ h2 {
   /* Latar belakang disamakan dengan Hero Section */
   background: radial-gradient(circle at center, #fff5f8 0%, #f8bbd0 100%);
   text-align: center;
+  border-radius: 20px;
+  margin-bottom: 4rem;
 }
 
 /* Aksen partikel latar belakang agar sama dengan Hero */
@@ -935,137 +938,297 @@ h2 {
 }
 
 /* ================================================= */
-/* 9. GALLERY GRID                                   */
+/* 9. GALLERY SECTION - FIX DISTORTION               */
 /* ================================================= */
+.gallery {
+  padding: 80px 20px;
+  /* Background radial pink Anda */
+  background: radial-gradient(circle at center, #fff5f8 0%, #f8bbd0 100%);
+  text-align: center;
+  overflow: hidden;
+  border-radius: 20px;
+  margin-bottom: 7rem;
+}
+
+.gallery h2 {
+  font-family: "Playfair Display", serif;
+  color: white;
+  margin-bottom: 50px;
+  font-size: 3rem;
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Wadah utama: Flexbox vertikal tengah */
 .gallery-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 15px;
-  max-width: 1000px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px; /* Jarak antar item dipersempit sedikit agar lebih padat */
+  max-width: 900px;
   margin: 0 auto;
 }
 
-.gallery-grid img {
+.gallery-item {
+  position: relative;
   width: 100%;
-  height: 250px;
-  object-fit: cover;
-  border-radius: 15px;
+  max-width: 550px; /* Batas lebar bingkai */
+
+  /* PENTING: Jangan atur 'height' yang kaku di sini */
+
+  border-radius: 20px;
+  overflow: hidden;
+  background: white; /* Bingkai putih */
+  padding: 10px; /* Jarak antara gambar dan bingkai */
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  transition:
+    transform 0.4s ease,
+    box-shadow 0.4s ease;
   cursor: pointer;
 }
 
+/* Styling Gambar Utama */
+.gallery-img {
+  width: 100%; /* Mengisi lebar bingkai */
+  height: auto; /* Mengikuti proporsi asli gambar (ANTI-GEPENG) */
+  display: block;
+  border-radius: 14px; /* Sudut gambar sedikit lebih kecil dari bingkai */
+  transition: transform 0.5s ease;
+
+  /* Object-fit contain memastikan gambar pas tanpa distorsi */
+  object-fit: contain;
+}
+
+/* Overlay sederhana di atas gambar */
+.gallery-overlay {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  right: 10px;
+  bottom: 10px;
+  background: rgba(240, 98, 146, 0.15); /* Pink sangat tipis */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  border-radius: 14px;
+  transition: opacity 0.4s ease;
+}
+
+.gallery-overlay span {
+  color: white;
+  font-size: 2.2rem;
+  filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.1));
+}
+
+/* Efek Hover */
+.gallery-item:hover {
+  transform: translateY(-8px) scale(1.01);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+}
+
+.gallery-item:hover .gallery-overlay {
+  opacity: 1;
+}
+
+.gallery-item:hover .gallery-img {
+  transform: scale(1.03); /* Sedikit zoom yang halus */
+}
 /* ================================================= */
-/* WEDDING GIFT - BANK CARDS                         */
+/* WEDDING GIFT - PREMIUM BANK CARDS                 */
 /* ================================================= */
+.gift {
+  padding: 100px 20px;
+  background: radial-gradient(circle at center, #fff5f8 0%, #f8bbd0 100%);
+  text-align: center;
+  border-radius: 20px;
+}
+
+.gift h2 {
+  font-family: "Playfair Display", serif;
+  color: white;
+  margin-bottom: 15px;
+  font-size: 3rem;
+  text-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.gift p {
+  color: #fff0f3;
+  max-width: 600px;
+  margin: 0 auto 50px;
+  font-size: 1.1rem;
+  line-height: 1.6;
+}
+
 .gift-wrapper {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 25px;
-  max-width: 1000px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 30px;
+  max-width: 1100px;
   margin: 0 auto;
-  padding: 20px;
 }
 
 /* ================================================= */
-/* 1. BASE BANK CARD STYLE                           */
+/* BASE BANK CARD STYLE (MODERN & GLOSSY)            */
 /* ================================================= */
 .bank-card {
-  background: linear-gradient(135deg, #1e272e 0%, #485460 100%);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
   color: white;
-  padding: 30px;
-  border-radius: 20px;
-  text-align: left; /* Default untuk kartu ATM */
+  padding: 35px 30px;
+  border-radius: 24px;
+  text-align: left;
   position: relative;
   overflow: hidden;
-  box-shadow: var(--shadow-sm);
-  transition: var(--transition);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  border: 1px solid rgba(255, 255, 255, 0.3);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  min-height: 200px;
+  min-height: 220px;
+  width: 100%;
+  max-width: 350px;
+  /* Default: Mandiri Platinum/Gold Style */
+  background: linear-gradient(135deg, #003d79 0%, #002855 100%);
+}
+
+/* Efek kilauan pada kartu */
+.bank-card::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.1) 0%,
+    transparent 70%
+  );
+  transform: rotate(30deg);
+  pointer-events: none;
 }
 
 .bank-card:hover {
-  transform: translateY(-10px) rotate(1deg);
-  box-shadow: var(--shadow-lg);
+  transform: translateY(-15px) rotateX(10deg);
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+  border-color: rgba(255, 255, 255, 0.6);
 }
 
-/* Aksesoris kartu (Chip ATM) - Hanya muncul di kartu bank biasa */
-.bank-card:not(.address-card)::after {
+/* Chip ATM Berlapis Emas (Khas Mandiri & Umum) */
+.bank-card::after {
   content: "";
   position: absolute;
-  top: 65px;
+  top: 75px;
   left: 30px;
-  width: 45px;
-  height: 35px;
-  background: linear-gradient(135deg, #d4af37, #f1c40f);
+  width: 48px;
+  height: 38px;
+  background: linear-gradient(135deg, #f1c40f 0%, #d4af37 50%, #f39c12 100%);
   border-radius: 8px;
-  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  z-index: 2;
 }
 
 /* Identitas Warna Bank */
 .bank-card.bsi {
-  background: linear-gradient(135deg, #009197 0%, #005f63 100%);
+  background: linear-gradient(135deg, #00a1a7 0%, #006064 100%);
 }
 .bank-card.seabank {
-  background: linear-gradient(135deg, #ff5c22 0%, #e64a19 100%);
+  background: linear-gradient(135deg, #ff7a4d 0%, #e64a19 100%);
 }
 .bank-card.dana {
-  background: linear-gradient(135deg, #118ee1 0%, #0e71b3 100%);
+  background: linear-gradient(135deg, #32abff 0%, #118ee1 100%);
 }
 
+/* Penyesuaian Logo Khusus Mandiri agar otentik */
 .bank-logo {
-  font-weight: 800;
-  font-size: 1.2rem;
-  margin-bottom: 40px;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 900;
+  font-size: 1.3rem;
+  margin-bottom: 50px;
   letter-spacing: 2px;
   z-index: 2;
+  text-transform: uppercase;
+}
+
+/* Aksen Kuning Mandiri pada teks logo Mandiri saja */
+.bank-card:not(.bsi):not(.seabank):not(.dana) .bank-logo {
+  color: #fbbe08; /* Warna kuning khas logo Mandiri */
+  text-shadow: 2px 2px 0px #002855;
 }
 
 .card-number {
   font-family: "Courier New", Courier, monospace;
-  font-size: clamp(1.1rem, 4vw, 1.4rem);
+  font-size: 1.4rem;
   font-weight: bold;
   letter-spacing: 3px;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
   z-index: 2;
+  color: #fff;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
 }
 
 .card-holder {
-  font-size: 0.8rem;
+  font-size: 0.85rem;
+  font-family: "Montserrat", sans-serif;
   text-transform: uppercase;
-  letter-spacing: 1px;
-  margin-bottom: 20px;
-  opacity: 0.9;
+  letter-spacing: 2px;
+  margin-bottom: 25px;
+  font-weight: 500;
   z-index: 2;
 }
 
+/* Tombol Salin */
 .btn-copy {
   background: rgba(255, 255, 255, 0.15);
   border: 1px solid rgba(255, 255, 255, 0.3);
   color: white;
-  padding: 10px 20px;
-  border-radius: 50px;
-  font-size: 0.75rem;
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: 0.3s;
-  backdrop-filter: blur(5px);
-  width: fit-content;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  z-index: 2;
 }
 
 .btn-copy:hover {
   background: white;
-  color: var(--text-dark);
+  color: #003d79; /* Biru Mandiri saat hover */
+  transform: scale(1.02);
+}
+
+/* Penyesuaian hover khusus untuk bank berwarna pink/merah agar teks tidak biru */
+.bank-card.seabank .btn-copy:hover {
+  color: #e64a19;
+}
+.bank-card.bsi .btn-copy:hover {
+  color: #006064;
+}
+.bank-card.dana .btn-copy:hover {
+  color: #118ee1;
+}
+
+.btn-copy i {
+  font-size: 0.9rem;
 }
 
 /* ================================================= */
 /* 2. PREMIUM ADDRESS CARD (REVISED)                 */
 /* ================================================= */
 .bank-card.address-card {
-  background: linear-gradient(135deg, #ffffff 0%, #f9f9f9 100%);
+  background: radial-gradient(circle at center, #fff5f8 0%, #f8bbd0 100%);
   color: var(--text-dark);
   border-radius: 30px;
-  padding: 50px 30px;
+  padding: 100px 30px;
   text-align: center; /* Centered untuk alamat */
   max-width: 600px;
   margin: 40px auto;
@@ -1154,42 +1317,147 @@ h2 {
   color: white;
 }
 
-/* ================================================= */
-/* 10. RSVP & GUESTBOOK                              */
-/* ================================================= */
-form {
+/* Container Utama RSVP */
+.rsvp {
+  padding: 80px 20px;
+  /* MENGUBAH BACKGROUND MENJADI WARNA SEPERTI GAMBAR */
+  /* Kita gunakan gradasi dari pink rose ke warna pink cerah sesuai gambar */
+  background: radial-gradient(circle at center, #fff5f8 0%, #f8bbd0 100%);
+  text-align: center;
+  border-radius: 20px;
+}
+
+.rsvp h2 {
+  font-family: "Playfair Display", serif;
+  color: white; /* Diubah menjadi putih agar kontras dengan background pink yang pekat */
+  margin-bottom: 10px;
+}
+
+/* Form Styling */
+#rsvpForm {
   max-width: 500px;
-  margin: 0 auto;
-  background: #fff;
-  padding: 40px;
-  border-radius: 30px;
-  box-shadow: var(--shadow-lg);
+  margin: 0 auto 50px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  background: white;
+  padding: 30px;
+  border-radius: 20px;
+  /* Shadow dengan nuansa warna #f06292 */
+  box-shadow: 0 15px 35px rgba(240, 98, 146, 0.15);
 }
 
-input,
-select,
-textarea {
-  width: 100%;
-  padding: 15px;
-  margin-bottom: 15px;
-  border: 1px solid #eee;
-  border-radius: 10px;
-  background: #f9f9f9;
+#rsvpForm input,
+#rsvpForm select,
+#rsvpForm textarea {
+  padding: 14px;
+  border: 2px solid #fce4ec; /* Pink sangat muda untuk border awal */
+  border-radius: 12px;
+  font-family: "Montserrat", sans-serif;
+  background-color: #fffafd;
+  transition: all 0.3s ease;
+  outline: none;
 }
 
-button {
-  background: var(--secondary);
-  color: #fff;
-  padding: 15px 30px;
+#rsvpForm input:focus,
+#rsvpForm select:focus,
+#rsvpForm textarea:focus {
+  border-color: #f06292; /* Berubah jadi Rose saat diklik */
+  box-shadow: 0 0 0 4px rgba(240, 98, 146, 0.1);
+}
+
+#rsvpForm button {
+  padding: 16px;
+  /* Gradasi tombol menggunakan warna rose ke arah yang sedikit lebih gelap */
+  background: linear-gradient(135deg, #f48fb1 0%, #f06292 100%);
+  color: white;
   border: none;
-  border-radius: 10px;
+  border-radius: 12px;
   cursor: pointer;
-  font-weight: 600;
-  transition: 0.3s;
+  font-weight: 700;
+  letter-spacing: 1px;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 20px rgba(240, 98, 146, 0.3);
 }
 
-button:hover {
-  background: var(--primary);
+#rsvpForm button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 25px rgba(240, 98, 146, 0.4);
+  filter: brightness(1.05);
+}
+
+/* Section Daftar Ucapan */
+.comment-section {
+  max-width: 600px;
+  margin: 0 auto;
+  text-align: left;
+}
+
+.comment-section h3 {
+  color: #ad1457; /* Warna rose gelap untuk teks judul */
+  font-size: 1.2rem;
+  margin-bottom: 20px;
+  font-weight: 700;
+}
+
+#commentsContainer {
+  max-height: 500px;
+  overflow-y: auto;
+  padding: 15px;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 20px;
+  border: 1px solid #fce4ec;
+}
+
+/* Card Ucapan Satuan */
+.comment-card {
+  background: white;
+  padding: 20px;
+  border-radius: 15px;
+  margin-bottom: 15px;
+  /* Aksen garis pinggir menggunakan warna #f06292 */
+  border-left: 5px solid #f06292;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+  animation: fadeInSlide 0.5s ease forwards;
+}
+
+.comment-name {
+  font-weight: 700;
+  color: #f06292;
+  font-size: 1rem;
+}
+
+.status-badge {
+  font-size: 0.7rem;
+  padding: 4px 12px;
+  border-radius: 50px;
+  background: #fce4ec;
+  color: #c2185b;
+  font-weight: 700;
+}
+
+.comment-text {
+  font-size: 0.95rem;
+  color: #444;
+  line-height: 1.6;
+  margin: 8px 0;
+}
+
+.comment-time {
+  font-size: 0.7rem;
+  color: #999;
+}
+
+/* Animasi Muncul */
+@keyframes fadeInSlide {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* ================================================= */
@@ -1477,9 +1745,6 @@ footer h3 {
 }
 
 /* ================================================= */
-/* 13. RESPONSIVE                                    */
-/* ================================================= */
-/* ================================================= */
 /* 13. FIXED RESPONSIVE & MOBILE DOCK               */
 /* ================================================= */
 @media (max-width: 768px) {
@@ -1505,6 +1770,61 @@ footer h3 {
     grid-column: auto;
   }
 }
+Untuk resolusi tablet atau layar menengah (768px), kita perlu menjaga keseimbangan antara desain desktop yang lebar dan desain mobile yang ringkas. Pada ukuran ini, kartu biasanya terlihat bagus jika sedikit lebih lebar namun tetap mempertahankan keterbacaan yang kuat.
+
+Berikut adalah kode CSS media query untuk max-width: 768px:
+
+CSS
+/* ================================================= */
+/* 4. TABLET OPTIMIZATION (Max-width: 768px)         */
+/* ================================================= */
+
+@media screen and (max-width: 768px) {
+  .bank-card {
+    max-width: 400px; /* Sedikit lebih lebar dari versi mobile */
+    padding: 30px 25px;
+    min-height: 210px;
+    margin: 20px auto; /* Memastikan kartu tetap di tengah */
+  }
+
+  /* Penyesuaian Chip */
+  .bank-card::after {
+    top: 65px;
+    left: 25px;
+    width: 44px;
+    height: 34px;
+  }
+
+  /* Logo Bank */
+  .bank-logo {
+    font-size: 1.2rem;
+    margin-bottom: 45px;
+  }
+
+  /* Nomor Kartu */
+  .card-number {
+    font-size: 1.3rem;
+    letter-spacing: 2.5px;
+    margin-bottom: 10px;
+  }
+
+  /* Nama Pemilik */
+  .card-holder {
+    font-size: 0.8rem;
+    margin-bottom: 22px;
+  }
+
+  /* Tombol Copy */
+  .btn-copy {
+    padding: 12px 20px;
+    font-size: 0.8rem;
+  }
+
+  /* Efek Hover: Kurangi intensitas rotasi untuk kenyamanan tablet */
+  .bank-card:hover {
+    transform: translateY(-10px) rotateX(5deg);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+  }
 
 @media (max-width: 480px) {
   /* --- 1. DOCK NAVBAR MOBILE --- */
@@ -1620,4 +1940,80 @@ footer h3 {
     transform: translateX(-50%) translateY(0);
     opacity: 1;
   }
+}
+.gallery {
+  padding: 60px 15px;
+}
+
+.gallery-grid {
+  gap: 20px;
+}
+
+.gallery-item {
+  max-width: 100%;
+  padding: 8px;
+  border-radius: 15px;
+}
+
+.gallery-img {
+  border-radius: 10px;
+}
+
+.gallery h2 {
+  font-size: 2.2rem;
+}
+
+.bank-card {
+  padding: 20px 15px; /* Kurangi padding agar konten tidak terhimpit */
+  min-height: 200px; /* Sesuaikan tinggi minimal */
+  max-width: 90%; /* Pastikan mengambil lebar penuh container */
+  border-radius: 20px;
+}
+
+/* Sesuaikan posisi chip ATM */
+.bank-card::after {
+  top: 60px;
+  left: 20px;
+  width: 40px;
+  height: 30px;
+}
+
+/* Logo Bank lebih kecil sedikit */
+.bank-logo {
+  font-size: 1.1rem;
+  margin-bottom: 40px;
+  letter-spacing: 1.5px;
+}
+
+/* Ukuran nomor kartu yang pas untuk layar kecil */
+.card-number {
+  font-size: 1.2rem;
+  letter-spacing: 2px;
+  margin-bottom: 8px;
+}
+
+/* Nama pemilik kartu */
+.card-holder {
+  font-size: 0.75rem;
+  letter-spacing: 1.5px;
+  margin-bottom: 20px;
+}
+
+/* Tombol Copy lebih ramping */
+.btn-copy {
+  padding: 10px 18px;
+  font-size: 0.75rem;
+  border-radius: 10px;
+}
+
+/* Matikan efek hover transform di mobile agar tidak mengganggu scrolling */
+/* Di perangkat sentuh, hover seringkali membuat bingung pengguna */
+.bank-card:hover {
+  transform: translateY(-5px); /* Efek angkat tipis saja, tanpa rotasi X */
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+}
+
+/* Jika ada container pembungkus kartu, pastikan ada jarak kiri-kanan */
+.card-container {
+  padding: 0 15px;
 }

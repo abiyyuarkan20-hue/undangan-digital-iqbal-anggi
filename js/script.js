@@ -398,3 +398,18 @@ if (flowerContainer) {
   }
   setInterval(createPetal, 500);
 }
+/* ================================================= */
+/* AUTO-FILL RSVP FROM URL (?to=nama)                */
+/* ================================================= */
+const urlParams = new URLSearchParams(window.location.search);
+const guestName = urlParams.get("to");
+const rsvpNamaInput = document.getElementById("nama");
+
+if (guestName && rsvpNamaInput) {
+  // Mengubah "Nama+Tamu" menjadi "Nama Tamu"
+  const decodedName = decodeURIComponent(guestName.replace(/\+/g, " "));
+  rsvpNamaInput.value = decodedName;
+
+  // Opsional: Buat input menjadi readonly jika ingin tamu tidak mengubah namanya
+  // rsvpNamaInput.readOnly = true;
+}
