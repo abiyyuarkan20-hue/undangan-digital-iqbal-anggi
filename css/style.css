@@ -1460,222 +1460,149 @@ h2 {
   }
 }
 
-/* ================================================= */
-/* PREMIUM FLOATING ACTIONS                          */
-/* ================================================= */
-
-/* Container Utama untuk merapikan urutan */
-.floating-actions {
-  position: fixed;
-  right: 20px;
-  bottom: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  z-index: 1000;
-  align-items: center;
+/* Warna Konsisten */
+:root {
+  --pink-primary: #f8c8dc;
+  --gold-soft: #e2c091;
+  --gold-dark: #bf8f61;
+  --text-slate: #708090;
 }
 
-/* Base Style untuk semua Tombol Bulat */
+/* Floating Actions */
+.floating-actions {
+  position: fixed;
+  bottom: 30px;
+  right: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  z-index: 1000;
+}
+
 .btn-float {
   width: 50px;
   height: 50px;
   border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border: none;
+  background: white;
+  color: var(--text-slate);
+  border: 1px solid var(--pink-primary);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   cursor: pointer;
-  font-size: 1.2rem;
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
-  text-decoration: none;
-  backdrop-filter: blur(5px); /* Efek Glassmorphism */
 }
 
-/* Efek Hover Universal */
-.btn-float:hover {
-  transform: translateY(-8px) scale(1.1);
-  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2);
-}
-
-/* Warna Individual */
 #qr-trigger {
-  background: var(--primary);
+  background: var(--pink-primary);
   color: white;
-  animation: pulse-gold 2s infinite;
+  animation: pulse-pink 2s infinite;
 }
 
-#musicBtn {
-  background: rgba(255, 255, 255, 0.9);
-  color: var(--text-dark);
-  border: 1px solid rgba(0, 0, 0, 0.05);
-}
-
-#scrollTop {
-  background: rgba(255, 255, 255, 0.9);
-  color: var(--text-dark);
-  opacity: 0; /* Default sembunyi */
-  pointer-events: none;
-  transform: translateY(20px);
-}
-
-#scrollTop.show {
-  opacity: 1;
-  pointer-events: auto;
-  transform: translateY(0);
-}
-
-/* Tooltip (Muncul saat hover) */
-.btn-float::before {
-  content: attr(data-tooltip);
-  position: absolute;
-  right: 65px;
-  background: rgba(0, 0, 0, 0.8);
+.btn-float:hover {
+  transform: translateY(-5px);
+  background: var(--gold-soft);
   color: white;
-  padding: 5px 12px;
-  border-radius: 8px;
-  font-size: 0.75rem;
-  white-space: nowrap;
-  opacity: 0;
-  visibility: hidden;
-  transition: 0.3s;
-  font-family: "Montserrat", sans-serif;
 }
 
-.btn-float:hover::before {
-  opacity: 1;
-  visibility: visible;
-}
-
-/* Animasi Pulse Gold yang lebih lembut */
-@keyframes pulse-gold {
-  0% {
-    box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.7);
-  }
-  70% {
-    box-shadow: 0 0 0 15px rgba(212, 175, 55, 0);
-  }
-  100% {
-    box-shadow: 0 0 0 0 rgba(212, 175, 55, 0);
-  }
-}
-
-/* ================================================= */
-/* MODAL OVERLAY - ROMANTIC WATERCOLOR & PEACH GOLD  */
-/* ================================================= */
-
+/* Modal Overlay & Content */
 .modal-overlay {
   display: none;
   position: fixed;
   inset: 0;
-  /* Overlay lebih terang dengan nuansa sage green lembut */
-  background: radial-gradient(
-    circle at center,
-    rgba(163, 184, 169, 0.4) 0%,
-    rgba(138, 158, 144, 0.6) 100%
-  );
-  backdrop-filter: blur(10px);
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(8px);
   z-index: 11000;
   align-items: center;
   justify-content: center;
   padding: 20px;
-  transition: all 0.4s ease;
 }
 
 .modal-content {
-  /* Latar belakang putih bersih */
   background: #ffffff;
-  /* Border emas lembut yang padat, bukan gradien keras */
-  border: 2px solid #e2c091; /* Peach Gold lembut */
-
-  padding: 40px 30px;
+  border: 2px solid var(--gold-soft);
+  padding: 35px 25px;
   max-width: 380px;
-  width: 90%;
+  width: 100%;
+  border-radius: 24px;
   text-align: center;
   position: relative;
-  /* Teks hijau tua kecoklatan seperti daun di gambar */
-  color: #556b2f;
-
-  /* Efek bayangan emas lembut */
-  box-shadow:
-    0 15px 35px rgba(0, 0, 0, 0.1),
-    0 0 15px rgba(226, 192, 145, 0.2);
-
-  /* Animasi Masuk: Muncul dari bawah + membesar */
-  animation: modalReveal 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  animation: modalReveal 0.4s ease-out;
 }
 
-/* Garis dekoratif di bawah judul dengan nuansa mawar peach */
-.modal-content h3 {
-  font-family: "Playfair Display", serif; /* Font elegan */
-  font-size: 24px;
-  margin-bottom: 15px;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  color: #bf8f61; /* Warna mawar peach gelap */
-}
-
-.modal-content h3::after {
-  content: "";
-  display: block;
-  width: 50px;
-  height: 2px;
-  background: #e2c091; /* Peach Gold lembut */
-  margin: 10px auto;
-}
-
-.close-modal {
-  position: absolute;
-  top: 10px;
-  right: 15px;
-  font-size: 32px;
-  color: #e2c091; /* Peach Gold lembut */
-  cursor: pointer;
-  transition: all 0.3s ease;
-  z-index: 2;
-  line-height: 1;
-}
-
-.close-modal:hover {
-  color: #bf8f61; /* Warna mawar peach gelap */
-  transform: rotate(90deg) scale(1.1);
-}
-
-.qr-img {
+.modal-input {
   width: 100%;
-  max-width: 220px;
+  padding: 12px 15px;
+  border-radius: 12px;
+  border: 1.5px solid var(--pink-primary);
+  background: #fff5f8;
+  margin-bottom: 15px;
+  outline: none;
+  font-family: inherit;
+}
+
+#qrcode-canvas {
+  margin: 15px auto;
   padding: 10px;
-  background: #fff;
-  border-radius: 4px;
-  margin: 20px 0;
-  /* Frame emas untuk gambar QR */
-  outline: 2px solid #e2c091; /* Peach Gold lembut */
-  outline-offset: 5px;
-  box-shadow: 0 0 15px rgba(226, 192, 145, 0.2);
+  background: white;
+  border: 1px solid var(--gold-soft);
+  border-radius: 8px;
+  width: fit-content;
 }
 
-.modal-content p {
-  font-size: 14px;
-  /* Warna sage green tua yang lembut */
-  color: #708090;
-  line-height: 1.6;
-  margin-top: 15px;
+#qrcode-canvas img {
+  display: block;
 }
 
-/* ================================================= */
-/* ANIMASI                                           */
-/* ================================================= */
+.qr-link-container {
+  background: #f9f9f9;
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+}
+
+#qr-link-text {
+  font-size: 10px;
+  word-break: break-all;
+  color: var(--text-slate);
+  margin: 0;
+}
+
+.btn-download {
+  background: var(--gold-soft);
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 50px;
+  width: 100%;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Animations */
+@keyframes pulse-pink {
+  0% {
+    box-shadow: 0 0 0 0 rgba(248, 200, 220, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(248, 200, 220, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(248, 200, 220, 0);
+  }
+}
 
 @keyframes modalReveal {
   from {
     opacity: 0;
-    transform: translateY(20px) scale(0.95);
+    transform: scale(0.9) translateY(20px);
   }
   to {
     opacity: 1;
-    transform: translateY(0) scale(1);
+    transform: scale(1) translateY(0);
   }
 }
 
@@ -1770,61 +1697,49 @@ footer h3 {
     grid-column: auto;
   }
 }
-Untuk resolusi tablet atau layar menengah (768px), kita perlu menjaga keseimbangan antara desain desktop yang lebar dan desain mobile yang ringkas. Pada ukuran ini, kartu biasanya terlihat bagus jika sedikit lebih lebar namun tetap mempertahankan keterbacaan yang kuat.
+.bank-card {
+  max-width: 400px; /* Ukuran ideal untuk tablet */
+  padding: 30px 25px; /* Padding sedikit lebih longgar dari mobile */
+  min-height: 220px; /* Menjaga aspek rasio kartu kartu kredit */
+  margin: 20px auto; /* Posisi tengah */
+  border-radius: 20px;
+}
 
-Berikut adalah kode CSS media query untuk max-width: 768px:
+/* Sesuaikan posisi Chip agar tidak bertabrakan dengan teks */
+.bank-card::after {
+  top: 65px;
+  left: 25px;
+  width: 45px;
+  height: 35px;
+}
 
-CSS
-/* ================================================= */
-/* 4. TABLET OPTIMIZATION (Max-width: 768px)         */
-/* ================================================= */
+.bank-logo {
+  font-size: 1.2rem;
+  margin-bottom: 45px;
+}
 
-@media screen and (max-width: 768px) {
-  .bank-card {
-    max-width: 400px; /* Sedikit lebih lebar dari versi mobile */
-    padding: 30px 25px;
-    min-height: 210px;
-    margin: 20px auto; /* Memastikan kartu tetap di tengah */
-  }
+.card-number {
+  font-size: 1.3rem; /* Ukuran angka yang tetap terbaca jelas */
+  letter-spacing: 2.5px;
+  margin-bottom: 10px;
+}
 
-  /* Penyesuaian Chip */
-  .bank-card::after {
-    top: 65px;
-    left: 25px;
-    width: 44px;
-    height: 34px;
-  }
+.card-holder {
+  font-size: 0.8rem;
+  letter-spacing: 1.5px;
+}
 
-  /* Logo Bank */
-  .bank-logo {
-    font-size: 1.2rem;
-    margin-bottom: 45px;
-  }
+/* Tombol Copy */
+.btn-copy {
+  padding: 12px 20px;
+  font-size: 0.8rem;
+}
 
-  /* Nomor Kartu */
-  .card-number {
-    font-size: 1.3rem;
-    letter-spacing: 2.5px;
-    margin-bottom: 10px;
-  }
-
-  /* Nama Pemilik */
-  .card-holder {
-    font-size: 0.8rem;
-    margin-bottom: 22px;
-  }
-
-  /* Tombol Copy */
-  .btn-copy {
-    padding: 12px 20px;
-    font-size: 0.8rem;
-  }
-
-  /* Efek Hover: Kurangi intensitas rotasi untuk kenyamanan tablet */
-  .bank-card:hover {
-    transform: translateY(-10px) rotateX(5deg);
-    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
-  }
+/* Efek Hover: Kurangi intensitas rotasi untuk kenyamanan tablet */
+.bank-card:hover {
+  transform: translateY(-10px) rotateX(5deg);
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+}
 
 @media (max-width: 480px) {
   /* --- 1. DOCK NAVBAR MOBILE --- */

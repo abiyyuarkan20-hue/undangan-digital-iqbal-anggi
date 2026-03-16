@@ -1,18 +1,7 @@
-/* ================================================= */
-/* CORE SYSTEM & CONFIGURATION                       */
-/* ================================================= */
-
 document.addEventListener("DOMContentLoaded", () => {
-  // 1. Inisialisasi AOS (Animate On Scroll)
-  if (typeof AOS !== "undefined") {
-    AOS.init({
-      duration: 1000,
-      once: true,
-      mirror: false,
-    });
-  }
-
-  /* --- 2. CONFIG & SELECTORS --- */
+  /* ================================================= */
+  /* 1. CONFIG & SELECTORS                             */
+  /* ================================================= */
   const weddingDate = new Date("Mar 29, 2026 10:00:00").getTime();
   const body = document.body;
   const music = document.getElementById("music");
@@ -20,26 +9,57 @@ document.addEventListener("DOMContentLoaded", () => {
   const overlay = document.getElementById("opening-overlay");
   const btnOpen = document.getElementById("btn-open-invitation");
   const navbar = document.querySelector(".navbar");
-  const navLinks = document.querySelectorAll(".navbar a");
-  const contentSections = document.querySelectorAll("section[id]");
   const scrollBtn = document.getElementById("scrollTop");
-  const glow = document.querySelector(".cursor-glow"); // Perbaikan: Ambil selector glow di sini
+  const glow = document.querySelector(".cursor-glow");
+  const contentSections = document.querySelectorAll("section[id]");
+  const navLinks = document.querySelectorAll(".navbar a");
+
+  // RSVP & QR Selectors
+  const rsvpNamaInput = document.getElementById("nama");
+  const guestElem = document.getElementById("guest-name");
+  const qrTrigger = document.getElementById("qr-trigger");
+  const qrModal = document.getElementById("qr-modal");
+  const closeModal = document.querySelector(".close-modal");
+  const qrInput = document.getElementById("qr-guest-name");
+  const qrCanvas = document.getElementById("qrcode-canvas");
+  const qrLinkText = document.getElementById("qr-link-text");
+  const downloadBtn = document.getElementById("download-qr");
+  const rsvpForm = document.getElementById("rsvpForm");
+  const commentsContainer = document.getElementById("commentsContainer");
+  const commentCount = document.getElementById("count");
+
+  // URL Logic
+  const urlParams = new URLSearchParams(window.location.search);
+  const guestFromQR = urlParams.get("to");
 
   let isPlaying = false;
   let lastScrollY = window.scrollY;
 
-  // Lock scroll pada awal load
+  // Lock scroll awal
   body.classList.add("no-scroll");
 
   /* ================================================= */
-  /* 1. OPENING & MUSIC LOGIC                          */
+  /* 2. AUTO-FILL DATA (Deteksi Scan QR)               */
   /* ================================================= */
+  if (guestFromQR) {
+    const decodedName = decodeURIComponent(guestFromQR.replace(/\+/g, " "));
+    // Isi input nama di form RSVP
+    if (rsvpNamaInput) rsvpNamaInput.value = decodedName;
+    // Ganti nama di teks ucapan "Kepada: Nama Tamu"
+    if (guestElem) guestElem.innerText = decodedName;
+  } else if (guestElem) {
+    guestElem.innerText = "Tamu Undangan";
+  }
 
+  /* ================================================= */
+  /* 3. OPENING, MUSIC & AUTO-SCROLL                   */
+  /* ================================================= */
   if (btnOpen) {
     btnOpen.addEventListener("click", () => {
       overlay.classList.add("fade-out");
       body.classList.remove("no-scroll");
 
+      // Play Music
       if (music) {
         music
           .play()
@@ -47,7 +67,17 @@ document.addEventListener("DOMContentLoaded", () => {
             isPlaying = true;
             if (musicBtn) musicBtn.innerHTML = "🎵";
           })
-          .catch((err) => console.log("Autoplay diblokir: ", err));
+          .catch((err) => console.log("Autoplay diblokir"));
+      }
+
+      // FITUR AUTO-SCROLL: Jika user datang dari scan QR
+      if (guestFromQR) {
+        setTimeout(() => {
+          const rsvpSection = document.getElementById("rsvp");
+          if (rsvpSection) {
+            rsvpSection.scrollIntoView({ behavior: "smooth", block: "center" });
+          }
+        }, 1500); // Delay 1.5 detik nunggu animasi fade-out selesai
       }
 
       setTimeout(() => {
@@ -70,177 +100,80 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   /* ================================================= */
-  /* 2. CURSOR GLOW & FLOWER PARTICLES                 */
+  /* 4. DYNAMIC QR GENERATOR (Admin Tool)              */
   /* ================================================= */
+  if (qrCanvas && typeof QRCode !== "undefined") {
+    let qrcodeInstance = new QRCode(qrCanvas, {
+      width: 180,
+      height: 180,
+      colorDark: "#333333",
+      colorLight: "#ffffff",
+      correctLevel: QRCode.CorrectLevel.H,
+    });
 
-  if (glow) {
-    let lastX = 0;
-    let lastY = 0;
-    let distanceThreshold = 20; // Bunga hanya muncul jika kursor gerak sejauh 20px
-
-    document.addEventListener("mousemove", (e) => {
-      // 1. Logika Glow (Kode lama Anda)
-      requestAnimationFrame(() => {
-        glow.style.opacity = "1";
-        glow.style.left = `${e.clientX}px`;
-        glow.style.top = `${e.clientY}px`;
-      });
-
-      // 2. Logika Efek Bunga (Baru)
-      let distance = Math.hypot(e.clientX - lastX, e.clientY - lastY);
-
-      if (distance > distanceThreshold) {
-        createFlower(e.clientX, e.clientY);
-        lastX = e.clientX;
-        lastY = e.clientY;
+    qrInput.addEventListener("input", (e) => {
+      const name = e.target.value.trim();
+      if (name !== "") {
+        const fullUrl = `${window.location.origin}${window.location.pathname}?to=${encodeURIComponent(name)}`;
+        qrcodeInstance.makeCode(fullUrl);
+        if (qrLinkText) qrLinkText.innerText = fullUrl;
+        if (downloadBtn) downloadBtn.style.display = "block";
+      } else {
+        if (downloadBtn) downloadBtn.style.display = "none";
       }
     });
 
-    document.addEventListener("mouseleave", () => {
-      glow.style.opacity = "0";
+    downloadBtn.addEventListener("click", () => {
+      const img = qrCanvas.querySelector("img");
+      if (img) {
+        const link = document.createElement("a");
+        link.href = img.src;
+        link.download = `QR_Undangan_${qrInput.value}.png`;
+        link.click();
+      }
     });
   }
 
-  // Fungsi untuk membuat elemen bunga dengan durasi lebih puitis
-  function createFlower(x, y) {
-    const flower = document.createElement("div");
-    flower.className = "cursor-flower";
+  // Modal Controls
+  if (qrTrigger)
+    qrTrigger.addEventListener("click", () => {
+      qrModal.style.display = "flex";
+      body.style.overflow = "hidden";
+    });
 
-    // Ukuran acak agar terlihat alami (organic look)
-    const sizeValue = Math.random() * 10 + 12;
-    flower.style.width = sizeValue + "px";
-    flower.style.height = sizeValue + "px";
+  const closeQRModal = () => {
+    qrModal.style.display = "none";
+    body.style.overflow = "auto";
+  };
 
-    // Posisi awal tepat di kursor (titik akar)
-    flower.style.left = x + "px";
-    flower.style.top = y + "px";
-
-    document.body.appendChild(flower);
-
-    // Waktu penghapusan disesuaikan menjadi 1.5 detik
-    // agar sinkron dengan animasi CSS yang lebih lambat
-    setTimeout(() => {
-      flower.remove();
-    }, 1700);
-  }
-  /* ================================================= */
-  /* 3. MAGNETIC CRYSTAL PARTICLES (FIXED & CLEANED)   */
-  /* ================================================= */
-  const canvas = document.getElementById("particle-canvas");
-  if (canvas) {
-    const particles = [];
-    const particleCount = 25;
-
-    // 1. Create Particles
-    for (let i = 0; i < particleCount; i++) {
-      const el = document.createElement("div");
-      el.className = "crystal";
-
-      const size = Math.random() * 8 + 4;
-      el.style.width = `${size}px`;
-      el.style.height = `${size}px`;
-
-      // Use clientHeight to ensure we get a real value
-      let canvasHeight = canvas.clientHeight || 600;
-      let posX = Math.random() * window.innerWidth;
-      let posY = Math.random() * canvasHeight;
-
-      el.style.left = `${posX}px`;
-      el.style.top = `${posY}px`;
-
-      particles.push({
-        el,
-        x: posX,
-        y: posY,
-        baseX: posX,
-        speed: Math.random() * 0.5 + 0.2,
-        angle: Math.random() * 360,
-      });
-      canvas.appendChild(el);
-    }
-
-    // 2. Mouse Interaction Logic
-    document.addEventListener("mousemove", (e) => {
-      const rect = canvas.getBoundingClientRect();
-      const mouseX = e.clientX - rect.left;
-      const mouseY = e.clientY - rect.top;
-
-      particles.forEach((p) => {
-        // We use p.baseX (static) and p.y (dynamic) for accurate distance
-        const dx = mouseX - p.baseX;
-        const dy = mouseY - p.y;
-        const distance = Math.sqrt(dx * dx + dy * dy);
-        const maxDistance = 150;
-
-        if (distance < maxDistance) {
-          const force = (maxDistance - distance) / maxDistance;
-          const moveX = (dx / distance) * force * 60;
-          const moveY = (dy / distance) * force * 60;
-
-          p.el.style.transform = `translate(${-moveX}px, ${-moveY}px) rotate(${p.angle}deg) scale(1.5)`;
-          p.el.style.opacity = "1";
-          p.el.style.boxShadow = "0 0 15px rgba(248, 165, 194, 0.8)";
-        } else {
-          p.el.style.transform = `translate(0, 0) rotate(${p.angle}deg) scale(1)`;
-          p.el.style.opacity = "0.4";
-          p.el.style.boxShadow = "none";
-        }
-      });
-    }); // <--- THIS WAS MISSING: Closing the mousemove listener
-
-    // 3. Animation Loop
-    function animateParticles() {
-      const canvasHeight = canvas.clientHeight || 600;
-      particles.forEach((p) => {
-        // Floating upwards
-        p.y -= p.speed;
-        p.angle += 0.5;
-
-        // Reset when it leaves the top
-        if (p.y < -20) {
-          p.y = canvasHeight + 20;
-        }
-
-        // Apply position
-        p.el.style.top = `${p.y}px`;
-      });
-      requestAnimationFrame(animateParticles);
-    }
-
-    // Start the animation
-    animateParticles();
-  }
+  if (closeModal) closeModal.addEventListener("click", closeQRModal);
+  window.addEventListener("click", (e) => {
+    if (e.target === qrModal) closeQRModal();
+  });
 
   /* ================================================= */
-  /* 4. NAVBAR & ACTIVE STATE & SCROLL LOGIC           */
+  /* 5. SCROLL EFFECTS (Navbar & ScrollTop)            */
   /* ================================================= */
   window.addEventListener("scroll", () => {
     let scrollY = window.scrollY;
 
-    // Show/Hide Navbar
+    // Navbar Hide/Show
     if (navbar) {
-      if (scrollY > lastScrollY && scrollY > 200) {
-        navbar.style.transform = "translateX(-50%) translateY(120px)";
-        navbar.style.opacity = "0";
-      } else {
-        navbar.style.transform = "translateX(-50%) translateY(0)";
-        navbar.style.opacity = "1";
-      }
+      navbar.style.transform =
+        scrollY > lastScrollY && scrollY > 200
+          ? "translateX(-50%) translateY(120px)"
+          : "translateX(-50%) translateY(0)";
+      navbar.style.opacity = scrollY > lastScrollY && scrollY > 200 ? "0" : "1";
     }
     lastScrollY = scrollY;
 
     // Scroll Top Button
     if (scrollBtn) {
-      if (scrollY > 500) {
-        scrollBtn.classList.add("show");
-        scrollBtn.style.display = "flex";
-      } else {
-        scrollBtn.classList.remove("show");
-        scrollBtn.style.display = "none";
-      }
+      scrollBtn.style.display = scrollY > 500 ? "flex" : "none";
+      scrollBtn.classList.toggle("show", scrollY > 500);
     }
 
-    // Nav Active State
+    // Active Link State
     contentSections.forEach((section) => {
       const sectionHeight = section.offsetHeight;
       const sectionTop = section.offsetTop - 300;
@@ -255,161 +188,175 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  if (scrollBtn) {
-    scrollBtn.addEventListener("click", () => {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    });
-  }
+  if (scrollBtn)
+    scrollBtn.addEventListener("click", () =>
+      window.scrollTo({ top: 0, behavior: "smooth" }),
+    );
 
   /* ================================================= */
-  /* 5. COUNTDOWN SYSTEM                               */
+  /* 6. DECORATIONS & OTHERS                           */
   /* ================================================= */
+  if (typeof AOS !== "undefined") AOS.init({ duration: 1000, once: true });
+
+  // Countdown Logic
   const updateCountdown = () => {
     const daysEl = document.getElementById("days");
-    const hoursEl = document.getElementById("hours");
-    const minsEl = document.getElementById("minutes");
-    const secsEl = document.getElementById("seconds");
-
     if (!daysEl) return;
-
     const now = new Date().getTime();
     const distance = weddingDate - now;
+    if (distance < 0) return;
 
-    if (distance < 0) {
-      const timer = document.getElementById("countdown-timer");
-      if (timer) timer.innerHTML = "<h3>Acara Sedang Berlangsung!</h3>";
-      return;
-    }
-
-    const d = Math.floor(distance / (1000 * 60 * 60 * 24));
-    const h = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    const m = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-    const s = Math.floor((distance % (1000 * 60)) / 1000);
-
-    daysEl.innerText = d.toString().padStart(2, "0");
-    hoursEl.innerText = h.toString().padStart(2, "0");
-    minsEl.innerText = m.toString().padStart(2, "0");
-    secsEl.innerText = s.toString().padStart(2, "0");
+    document.getElementById("days").innerText = Math.floor(
+      distance / (1000 * 60 * 60 * 24),
+    )
+      .toString()
+      .padStart(2, "0");
+    document.getElementById("hours").innerText = Math.floor(
+      (distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
+    )
+      .toString()
+      .padStart(2, "0");
+    document.getElementById("minutes").innerText = Math.floor(
+      (distance % (1000 * 60 * 60)) / (1000 * 60),
+    )
+      .toString()
+      .padStart(2, "0");
+    document.getElementById("seconds").innerText = Math.floor(
+      (distance % (1000 * 60)) / 1000,
+    )
+      .toString()
+      .padStart(2, "0");
   };
-
   setInterval(updateCountdown, 1000);
-  updateCountdown();
 
-  /* ================================================= */
-  /* 6. FUNGSI GUEST NAME (URL PARAMETER)              */
-  /* ================================================= */
-  const urlParams = new URLSearchParams(window.location.search);
-  const guestName = urlParams.get("to");
-  const guestElem = document.getElementById("guest-name");
+  // Glow effect & Flowers (Satu listener saja)
+  if (glow) {
+    let lastX = 0,
+      lastY = 0;
+    document.addEventListener("mousemove", (e) => {
+      requestAnimationFrame(() => {
+        glow.style.opacity = "1";
+        glow.style.left = `${e.clientX}px`;
+        glow.style.top = `${e.clientY}px`;
+      });
 
-  if (guestElem) {
-    if (guestName) {
-      guestElem.innerText = decodeURIComponent(guestName.replace(/\+/g, " "));
-    } else {
-      guestElem.innerText = "Tamu Undangan";
-    }
+      if (Math.hypot(e.clientX - lastX, e.clientY - lastY) > 25) {
+        createFlower(e.clientX, e.clientY);
+        lastX = e.clientX;
+        lastY = e.clientY;
+      }
+    });
+    document.addEventListener("mouseleave", () => (glow.style.opacity = "0"));
   }
 
-  /* ================================================= */
-  /* 7. FLOATING ACTIONS & MODAL LOGIC                 */
-  /* ================================================= */
-  const qrTrigger = document.getElementById("qr-trigger");
-  const qrModal = document.getElementById("qr-modal");
-  const closeModal = document.querySelector(".close-modal");
-
-  const openQR = () => {
-    if (qrModal) {
-      qrModal.style.display = "flex";
-      body.style.overflow = "hidden";
-    }
-  };
-
-  const closeQR = () => {
-    if (qrModal) {
-      qrModal.style.display = "none";
-      body.style.overflow = "auto";
-    }
-  };
-
-  if (qrTrigger) qrTrigger.addEventListener("click", openQR);
-  if (closeModal) closeModal.addEventListener("click", closeQR);
-
-  window.addEventListener("click", (e) => {
-    if (e.target === qrModal) closeQR();
-  });
-
-  window.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && qrModal && qrModal.style.display === "flex")
-      closeQR();
-  });
-
-  // Animasi Klik Tombol (Feedback)
-  const allButtons = document.querySelectorAll(".btn-float");
-  allButtons.forEach((btn) => {
-    btn.addEventListener("mousedown", () => {
-      btn.style.transform = "scale(0.9)";
-    });
-    btn.addEventListener("mouseup", () => {
-      btn.style.transform = "";
-    });
-  });
+  function createFlower(x, y) {
+    const flower = document.createElement("div");
+    flower.className = "cursor-flower";
+    const size = Math.random() * 10 + 12;
+    flower.style.width = flower.style.height = size + "px";
+    flower.style.left = x + "px";
+    flower.style.top = y + "px";
+    document.body.appendChild(flower);
+    setTimeout(() => flower.remove(), 1700);
+  }
 });
 
 /* ================================================= */
-/* GLOBAL FUNCTIONS (Dapat diakses via HTML)         */
+/* GLOBAL UTILS                                      */
 /* ================================================= */
-
 window.copyRek = function (id) {
   const el = document.getElementById(id);
   if (!el) return;
   const num = el.innerText.replace(/\D/g, "");
-  navigator.clipboard.writeText(num).then(() => {
-    alert("Nomor Rekening Disalin: " + num);
-  });
-};
-
-window.copyText = function (text) {
   navigator.clipboard
-    .writeText(text)
-    .then(() => {
-      alert("Berhasil disalin: " + text);
-    })
-    .catch((err) => {
-      console.error("Gagal menyalin: ", err);
-    });
+    .writeText(num)
+    .then(() => alert("Nomor Rekening Disalin: " + num));
 };
 
-/* --- FLOWERS EFFECT --- */
-const flowerContainer = document.querySelector(".flower-container");
-if (flowerContainer) {
-  function createPetal() {
-    const petal = document.createElement("div");
-    petal.classList.add("petal");
-    petal.style.left = Math.random() * 100 + "vw";
-    const duration = Math.random() * 6 + 6;
-    petal.style.animationDuration = duration + "s";
-    const size = Math.random() * 10 + 10 + "px";
-    petal.style.width = size;
-    petal.style.height = size;
-    flowerContainer.appendChild(petal);
-    setTimeout(() => {
-      petal.remove();
-    }, duration * 1000);
+/* ================================================= */
+/* 3. MAGNETIC CRYSTAL PARTICLES (FIXED & CLEANED)   */
+/* ================================================= */
+const canvas = document.getElementById("particle-canvas");
+if (canvas) {
+  const particles = [];
+  const particleCount = 25;
+
+  // 1. Create Particles
+  for (let i = 0; i < particleCount; i++) {
+    const el = document.createElement("div");
+    el.className = "crystal";
+
+    const size = Math.random() * 8 + 4;
+    el.style.width = `${size}px`;
+    el.style.height = `${size}px`;
+
+    // Use clientHeight to ensure we get a real value
+    let canvasHeight = canvas.clientHeight || 600;
+    let posX = Math.random() * window.innerWidth;
+    let posY = Math.random() * canvasHeight;
+
+    el.style.left = `${posX}px`;
+    el.style.top = `${posY}px`;
+
+    particles.push({
+      el,
+      x: posX,
+      y: posY,
+      baseX: posX,
+      speed: Math.random() * 0.5 + 0.2,
+      angle: Math.random() * 360,
+    });
+    canvas.appendChild(el);
   }
-  setInterval(createPetal, 500);
-}
-/* ================================================= */
-/* AUTO-FILL RSVP FROM URL (?to=nama)                */
-/* ================================================= */
-const urlParams = new URLSearchParams(window.location.search);
-const guestName = urlParams.get("to");
-const rsvpNamaInput = document.getElementById("nama");
 
-if (guestName && rsvpNamaInput) {
-  // Mengubah "Nama+Tamu" menjadi "Nama Tamu"
-  const decodedName = decodeURIComponent(guestName.replace(/\+/g, " "));
-  rsvpNamaInput.value = decodedName;
+  // 2. Mouse Interaction Logic
+  document.addEventListener("mousemove", (e) => {
+    const rect = canvas.getBoundingClientRect();
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
 
-  // Opsional: Buat input menjadi readonly jika ingin tamu tidak mengubah namanya
-  // rsvpNamaInput.readOnly = true;
+    particles.forEach((p) => {
+      // We use p.baseX (static) and p.y (dynamic) for accurate distance
+      const dx = mouseX - p.baseX;
+      const dy = mouseY - p.y;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+      const maxDistance = 150;
+
+      if (distance < maxDistance) {
+        const force = (maxDistance - distance) / maxDistance;
+        const moveX = (dx / distance) * force * 60;
+        const moveY = (dy / distance) * force * 60;
+
+        p.el.style.transform = `translate(${-moveX}px, ${-moveY}px) rotate(${p.angle}deg) scale(1.5)`;
+        p.el.style.opacity = "1";
+        p.el.style.boxShadow = "0 0 15px rgba(248, 165, 194, 0.8)";
+      } else {
+        p.el.style.transform = `translate(0, 0) rotate(${p.angle}deg) scale(1)`;
+        p.el.style.opacity = "0.4";
+        p.el.style.boxShadow = "none";
+      }
+    });
+  }); // <--- THIS WAS MISSING: Closing the mousemove listener
+
+  // 3. Animation Loop
+  function animateParticles() {
+    const canvasHeight = canvas.clientHeight || 600;
+    particles.forEach((p) => {
+      // Floating upwards
+      p.y -= p.speed;
+      p.angle += 0.5;
+
+      // Reset when it leaves the top
+      if (p.y < -20) {
+        p.y = canvasHeight + 20;
+      }
+
+      // Apply position
+      p.el.style.top = `${p.y}px`;
+    });
+    requestAnimationFrame(animateParticles);
+  }
+
+  // Start the animation
+  animateParticles();
 }
