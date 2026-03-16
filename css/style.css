@@ -1325,6 +1325,7 @@ h2 {
   background: radial-gradient(circle at center, #fff5f8 0%, #f8bbd0 100%);
   text-align: center;
   border-radius: 20px;
+  margin-bottom: 5rem;
 }
 
 .rsvp h2 {
