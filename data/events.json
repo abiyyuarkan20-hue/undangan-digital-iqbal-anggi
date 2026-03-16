@@ -1,0 +1,18 @@
+[
+  {
+    "id": "akad",
+    "title": "Akad Nikah",
+    "date": "2026-10-12T08:00:00",
+    "location": "Masjid Agung Kota Jakarta",
+    "address": "-6.2088,106.8456",
+    "description": "Upacara akad nikah secara Islam"
+  },
+  {
+    "id": "resepsi",
+    "title": "Resepsi Pernikahan",
+    "date": "2026-10-12T19:00:00",
+    "location": "Hotel Grand XYZ Ballroom",
+    "address": "-6.2100,106.8400",
+    "description": "Resepsi mewah untuk tamu undangan"
+  }
+]
